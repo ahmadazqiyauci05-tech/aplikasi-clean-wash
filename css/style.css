@@ -1,0 +1,354 @@
+/* =========================================
+   1. GLOBAL & RESET
+   ========================================= */
+* { box-sizing: border-box; }
+/* LATAR BELAKANG UTAMA ABU-ABU LEMBUT NON-PUTIH */
+body { background-color: #E0E5EC; font-family: "Poppins", "Segoe UI", sans-serif; margin: 0; overflow-x: hidden; color: #344767; }
+
+/* =========================================
+   2. SIDEBAR
+   ========================================= */
+.sidebar { 
+    width: 250px; 
+    /* SIDEBAR HIJAU TUA GELAP (DARK TEAL) */
+    background: #036458; 
+    height: 100vh; 
+    position: fixed; 
+    top: 0; 
+    left: 0; 
+    padding: 30px 0; 
+    display: flex; 
+    flex-direction: column; 
+    align-items: center; 
+    z-index: 1000; 
+    box-shadow: 2px 0 10px rgba(0,0,0,0.3); 
+}
+/* Warna teks di Sidebar menjadi putih */
+.sidebar h3 { color: #FFFFFF; font-weight: 700; font-size: 22px; text-align: center; margin-bottom: 0px; letter-spacing: 1px; }
+/* Ikon brand Hijau Tosca (Lebih Terang dari Background) */
+.sidebar h3 i { font-size: 24px; color: #02C39A; } 
+
+.sidebar .menu-btn { 
+    width: 85%; 
+    padding: 14px 18px; 
+    margin: 6px 0; 
+    border-radius: 10px; 
+    border: none; 
+    background: transparent; 
+    color: #C0C0C0; /* Warna teks menu abu-abu terang */
+    font-size: 15px; 
+    text-align: left; 
+    cursor: pointer; 
+    transition: 0.3s; 
+    display: flex; 
+    align-items: center; 
+}
+.sidebar .menu-btn i { width: 25px; color: #C0C0C0; transition: 0.3s; }
+.sidebar .menu-btn:hover { 
+    background-color: #047A6A; /* Hover Sedikit Lebih Terang */
+    color: #FFFFFF; 
+    transform: translateX(5px); 
+}
+/* Warna ikon pada hover */
+.sidebar .menu-btn:hover i { color: #FFFFFF; }
+
+/* Warna tombol active (HIJAU TOSCA/MINT) */
+.sidebar .active { 
+    background: linear-gradient(90deg, #00A896 0%, #02C39A 100%); 
+    color: #fff !important; 
+    font-weight: 600; 
+    box-shadow: 0 4px 15px rgba(0, 168, 150, 0.4); 
+}
+.sidebar .active i { color: #fff !important; }
+
+/* =========================================
+   3. TOP NAVBAR & PROFILE
+   ========================================= */
+.top-navbar { 
+    /* TOP NAVBAR DIUBAH KE HIJAU TOSCA TERANG */
+    background: #02C39A; 
+    height: 70px; 
+    display: flex; 
+    align-items: center; 
+    justify-content: space-between; 
+    padding: 0 30px; 
+    margin-left: 250px; 
+    color: #FFFFFF; /* Teks Navar menjadi putih */
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2); 
+    position: sticky; 
+    top: 0; 
+    z-index: 999; 
+}
+/* Ikon Hamburger Menu */
+.top-navbar .btn-transparent { color: #FFFFFF !important; } 
+
+/* Profile Icon dan Teks */
+.top-navbar .user-profile { color: #FFFFFF; }
+.top-navbar .text-secondary { color: #FFFFFF !important; }
+.top-navbar .user-profile:hover { background-color: rgba(255, 255, 255, 0.2); } /* Hover transparan */
+
+.profile-avatar { width: 35px; height: 35px; background: #036458; border: 2px solid #FFFFFF; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: white; }
+
+.dropdown-menu { 
+    background-color: #FFFFFF; 
+    border: 1px solid #E0E0E0 !important; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.15) !important; 
+    border-radius: 12px !important; 
+}
+.dropdown-header { color: #6C757D !important; }
+.dropdown-item { padding: 10px 20px; font-size: 14px; transition: 0.2s; color: #344767; }
+.dropdown-item:hover { background-color: #E0E5EC; color: #00A896; }
+
+/* =========================================
+   4. CONTENT & CARDS
+   ========================================= */
+.content { 
+    /* Content inherit warna body: #E0E5EC */
+    margin-left: 250px; 
+    padding: 30px 40px; 
+    min-height: 100vh; 
+}
+/* Garis bawah Judul Halaman */
+.page-title { 
+    font-size: 28px; 
+    font-weight: 700; 
+    color: #344767; 
+    margin-bottom: 30px; 
+    border-bottom: 3px solid #00A896;
+    display: inline-block; 
+    padding-bottom: 8px; 
+}
+.card-custom { 
+    background: #FFFFFF; /* Kartu tetap putih untuk menonjol */
+    color: #344767;
+    border-radius: 16px; 
+    padding: 35px; 
+    border: none; 
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08); 
+    transition: transform 0.3s ease; 
+}
+.card-custom:hover { transform: translateY(-3px); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1); }
+/* Garis kiri Card H5 */
+.card-custom h5 { font-weight: 700; color: #344767; margin-bottom: 25px; border-left: 5px solid #00A896; padding-left: 15px; }
+
+.dashboard-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 25px; margin-bottom: 30px; }
+.card-stat { border-radius: 16px; color: white; position: relative; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.2); min-height: 120px; }
+.card-body { padding: 25px; display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 2; }
+.card-info h3 { font-size: 42px; font-weight: 800; margin: 0; line-height: 1; }
+.card-info p { font-size: 14px; margin: 5px 0 0; opacity: 0.9; text-transform: uppercase; font-weight: 600; }
+.card-icon { font-size: 70px; opacity: 0.2; position: absolute; right: 20px; top: 50%; transform: translateY(-50%); z-index: 1; }
+
+/* Skema Warna Card */
+.bg-blue { background: linear-gradient(45deg, #006aff, #0045b7); } 
+.bg-orange { background: linear-gradient(45deg, #ff9f43, #d98a00); } 
+.bg-red { background: linear-gradient(45deg, #FF6B6B, #E63946); } 
+.bg-green { background: linear-gradient(45deg, #00A896, #036458); } /* Hijau Tosca Tua */
+
+/* =========================================
+   5. FORM, INPUT & TABLE
+   ========================================= */
+label { font-size: 13px; font-weight: 600; color: #6C757D; margin-bottom: 8px; text-transform: uppercase; }
+.form-control, .form-select { 
+    background-color: #F0F2F5; /* Input lebih abu-abu */
+    border: 2px solid #E9ECEF; 
+    border-radius: 10px; 
+    height: 50px; 
+    padding-left: 20px; 
+    font-size: 15px; 
+    color: #344767; 
+    transition: 0.3s; 
+}
+/* Fokus Hijau */
+.form-control:focus, .form-select:focus { 
+    background-color: #FFFFFF; 
+    border-color: #00A896; 
+    box-shadow: 0 0 0 4px rgba(0, 168, 150, 0.2); 
+}
+.form-control[readonly], .form-select[readonly] {
+    background-color: #E0E5EC !important; /* Non-putih untuk readonly */
+    color: #6C757D !important;
+    border-color: #E9ECEF !important;
+}
+.form-control.is-invalid {
+    border-color: #E63946 !important;
+    box-shadow: 0 0 0 4px rgba(230, 57, 70, 0.2);
+}
+
+/* Tombol Save (Hijau Tosca Gradient) */
+.btn-save { 
+    background: linear-gradient(135deg, #00A896, #02C39A); 
+    border: none; 
+    width: 100%; 
+    padding: 12px; 
+    border-radius: 10px; 
+    font-weight: 700; 
+    color: white; 
+    margin-top: 15px; 
+    cursor: pointer; 
+    transition: 0.3s; 
+    box-shadow: 0 5px 15px rgba(0, 168, 150, 0.4);
+}
+.btn-save:hover { 
+    transform: translateY(-2px); 
+    box-shadow: 0 8px 20px rgba(0, 168, 150, 0.6); 
+}
+
+/* Tombol Batal Edit Custom */
+.btn-cancel { 
+    background-color: #FFFFFF; 
+    color: #6C757D; 
+    border: 1px solid #E0E5EC; 
+    padding: 10px 25px; 
+    border-radius: 10px; 
+    font-size: 14px; 
+    font-weight: 600; 
+    cursor: pointer; 
+    transition: 0.2s; 
+    display: inline-flex; 
+    align-items: center; 
+    gap: 8px; 
+}
+.btn-cancel:hover { 
+    background-color: #FFF5F5; 
+    color: #E63946; 
+    border-color: #E63946; 
+    transform: translateY(-1px); 
+}
+
+/* Tombol Aksi Tabel */
+.btn-sm { width: 32px; height: 32px; border-radius: 8px; padding: 0; display: inline-flex; align-items: center; justify-content: center; margin: 0 3px; transition: transform 0.2s; }
+.btn-sm:hover { transform: scale(1.1); }
+
+/* Table Box */
+.table-box { 
+    background: #FFFFFF; /* Tabel container tetap putih */
+    border-radius: 16px; 
+    padding: 0; 
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.08); 
+    overflow: hidden; 
+    border: 1px solid #E0E5EC; 
+}
+table { margin-bottom: 0 !important; width: 100%; }
+/* Header tabel (Hijau Tua/Tosca) */
+thead tr { background: linear-gradient(90deg, #036458, #00A896) !important; }
+thead th { color: white !important; font-weight: 600; font-size: 14px; padding: 18px !important; text-transform: uppercase; border: none; }
+tbody tr { transition: background-color 0.2s ease; }
+tbody tr:hover { background-color: #F0F2F5 !important; }
+tbody td { padding: 18px !important; font-size: 14px; color: #344767; border-bottom: 1px solid #E9ECEF; vertical-align: middle; }
+
+/* Badge Status */
+.badge-status { padding: 8px 16px; border-radius: 30px; font-size: 12px; font-weight: 700; text-transform: uppercase; }
+.status-lulus { background-color: #D4EDDA; color: #155724; }
+.status-gagal { background-color: #F8D7DA; color: #721C24; }
+
+/* Badge Pesanan */
+.badge-pesanan { padding: 8px 16px; border-radius: 30px; font-size: 12px; font-weight: 700; text-transform: uppercase; }
+.badge-masuk { background-color: #CCE5FF; color: #004085; } 
+.badge-proses { background-color: #FFF3CD; color: #856404; }
+.badge-selesai { background-color: #D4EDDA; color: #155724; }
+.badge-ambil { background-color: #D6F1EE; color: #00A896; } 
+
+/* Badge Pengeluaran - Warna Merah/Orange Tua */
+.badge-operasional { background-color: #FFE5D0; color: #FF9F43; } 
+.badge-gaji { background-color: #E9D0FF; color: #7B2CBF; }
+.badge-maintenance { background-color: #D2E0FF; color: #006AFF; }
+.badge-lainnya { background-color: #F0F2F5; color: #6C757D; }
+
+
+/* =========================================
+   6. LOGIN & REGISTER
+   ========================================= */
+.login-body { background: url('https://images.unsplash.com/photo-1533109721025-d1ae7ee7c1e1?q=0&w=2070&auto=format&fit=crop') no-repeat center center fixed; background-size: cover; height: 100vh; display: flex; justify-content: center; align-items: center; }
+.login-container { width: 100%; height: 100%; display: flex; justify-content: center; align-items: center; background: rgba(224, 229, 236, 0.9); backdrop-filter: blur(5px); flex-direction: column; } /* Background Transparan Abu-abu */
+.login-logo {
+    display: block; 
+    margin: 0 auto 25px auto; 
+    width: 120px; 
+    height: auto; 
+    filter: drop-shadow(0 0 15px rgba(0, 168, 150, 0.3));
+}
+.login-box { 
+    background: #FFFFFF;
+    padding: 40px 40px; 
+    width: 400px; 
+    max-width: 90%; 
+    border-radius: 20px; 
+    border: 1px solid #E0E0E0; 
+    box-shadow: 0 15px 40px rgba(0,0,0,0.15); 
+    text-align: center; 
+    display: flex; 
+    flex-direction: column; 
+    color: #344767;
+}
+.login-box h2 { color: #344767; font-weight: 700; margin-bottom: 30px; }
+.input-group { margin-bottom: 20px; text-align: left; width: 100%; }
+.input-group label { color: #6C757D; font-size: 13px; font-weight: 500; display: block; margin-bottom: 8px; }
+.input-group input { 
+    width: 100%; 
+    padding: 12px 15px; 
+    background: #F0F2F5; 
+    border: 1px solid #E9ECEF; 
+    border-radius: 10px; 
+    color: #344767; 
+    font-size: 14px; 
+    outline: none; 
+    transition: 0.3s; 
+    box-sizing: border-box; 
+}
+.input-group input:focus { border-color: #00A896; background: #FFFFFF; } /* Fokus Hijau */
+
+/* Tombol Login (Hijau Tosca Gradient) */
+.btn-login { 
+    width: 100%; 
+    padding: 14px; 
+    background: linear-gradient(135deg, #00A896, #02C39A); 
+    border: none; 
+    border-radius: 10px; 
+    color: white; 
+    font-size: 16px; 
+    font-weight: 700; 
+    cursor: pointer; 
+    margin-top: 10px; 
+    box-shadow: 0 5px 15px rgba(0, 168, 150, 0.3); 
+}
+.btn-login:hover { transform: translateY(-3px); box-shadow: 0 8px 25px rgba(0, 168, 150, 0.5); }
+.register-text { margin-top: 20px; font-size: 13px; color: #6C757D; }
+.register-text a { color: #00A896; text-decoration: none; font-weight: 600; } /* Link Hijau */
+.password-wrapper { position: relative; width: 100%; display: flex; }
+.password-wrapper input { width: 100%; padding-right: 45px !important; }
+.toggle-password { position: absolute; right: 15px; top: 50%; transform: translateY(-50%); cursor: pointer; color: #888; z-index: 10; }
+
+/* =========================================
+   8. SIDEBAR TOGGLE & TRANSITION 
+   ========================================= */
+
+.sidebar, .top-navbar, .content {
+    transition: all 0.3s ease-in-out;
+}
+.sidebar {
+    left: 0;
+}
+.top-navbar, .content {
+    margin-left: 250px; 
+}
+.sidebar-hidden .sidebar {
+    left: -250px;
+}
+.sidebar-hidden .top-navbar,
+.sidebar-hidden .content {
+    margin-left: 0;
+}
+
+
+/* =========================================
+   7. ANIMATION & RESPONSIVE 
+   ========================================= */
+@media (max-width: 991px) {
+  .sidebar { width: 100%; height: auto; position: relative; padding: 15px 0; }
+  .top-navbar { margin-left: 0; width: 100%; padding: 0 20px; }
+  .content { margin-left: 0; padding: 20px; }
+  .dashboard-cards { grid-template-columns: 1fr; }
+}
+.content-section { display: none; animation: fadeIn 0.4s ease-in-out; }
+.content-section.active { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }

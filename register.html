@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daftar Akun - Portal Laundry</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="css/style.css"> 
+</head>
+<body class="login-body">
+
+    <div class="login-container">
+        <div class="login-box" style="width: 400px;"> <h2>DAFTAR AKUN</h2>
+            
+            <form id="registerForm">
+                
+                <div class="input-group">
+                    <label>Nama Lengkap</label>
+                    <input type="text" id="regName" placeholder="Contoh: Aditya Rahmattullah" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" id="regEmail" placeholder="contoh@email.com" required>
+                </div>
+
+                <div class="input-group">
+                    <label>Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="regPassword" placeholder="Minimal 6 karakter" required>
+                        <i class="fas fa-eye toggle-password" id="toggleRegPass"></i>
+                    </div>
+                </div>
+
+                <div class="input-group">
+                    <label>Konfirmasi Password</label>
+                    <div class="password-wrapper">
+                        <input type="password" id="regConfirmPassword" placeholder="Ulangi password" required>
+                        <i class="fas fa-eye toggle-password" id="toggleRegConfirmPass"></i>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-login">Daftar Sekarang</button>
+                
+                <p class="register-text">Sudah punya akun? <a href="login.html">Login di sini</a></p>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+    <script src="js/firebase-config.js"></script> 
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // --- LOGIKA IKON MATA ---
+        
+        const toggleRegPass = document.querySelector('#toggleRegPass');
+        const regPasswordInput = document.querySelector('#regPassword');
+        toggleRegPass.addEventListener('click', function () {
+            const type = regPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            regPasswordInput.setAttribute('type', type);
+            this.classList.toggle('fa-eye-slash');
+        });
+
+        const toggleRegConfirmPass = document.querySelector('#toggleRegConfirmPass');
+        const regConfirmPasswordInput = document.querySelector('#regConfirmPassword');
+        toggleRegConfirmPass.addEventListener('click', function () {
+            const type = regConfirmPasswordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            regConfirmPasswordInput.setAttribute('type', type);
+            this.classList.toggle('fa-eye-slash');
+        });
+
+
+        // --- LOGIKA REGISTER KE FIREBASE ---
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const nama = document.getElementById('regName').value; 
+            const email = document.getElementById('regEmail').value;
+            const password = document.getElementById('regPassword').value;
+            const confirmPassword = document.getElementById('regConfirmPassword').value; 
+
+            if (password !== confirmPassword) {
+                Swal.fire({
+                    title: 'Password Tidak Sama!',
+                    text: 'Silakan periksa kembali password dan konfirmasi password Anda.',
+                    icon: 'warning', 
+                    confirmButtonText: 'Perbaiki',
+                    confirmButtonColor: '#d33',
+                    background: '#fff',
+                    color: '#344767'
+                });
+                return; 
+            }
+
+            // 1. Buat User di Firebase Auth
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    const user = userCredential.user;
+
+                    // 2. Simpan Role dan info dasar ke koleksi 'users' (DEFAULT: KARYAWAN)
+                    const userPromise = db.collection('users').doc(user.uid).set({
+                        nama: nama,
+                        email: email,
+                        uid: user.uid,
+                        role: 'karyawan', 
+                        dibuat_pada: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    
+                    // 3. Tambahkan entry ke koleksi 'staf' (untuk manajemen staf)
+                    const stafPromise = db.collection('staf').add({
+                        nama: nama,
+                        nip: '', 
+                        email_akun: email, 
+                        timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+
+                    return Promise.all([userPromise, stafPromise]);
+                })
+                .then(() => {
+                    Swal.fire({
+                        title: 'Berhasil Daftar!',
+                        text: 'Akun Karyawan berhasil dibuat dan didaftarkan di manajemen staf. Silakan login.',
+                        icon: 'success',
+                        confirmButtonText: 'Login Sekarang',
+                        confirmButtonColor: '#7b2cbf',
+                        background: '#fff',
+                        color: '#344767'
+                    }).then(() => {
+                        window.location.href = "login.html";
+                    });
+                })
+                .catch((error) => {
+                    let pesanError = error.message;
+                    if(error.code === 'auth/email-already-in-use') {
+                        pesanError = "Email ini sudah terdaftar!";
+                    } else if(error.code === 'auth/weak-password') {
+                        pesanError = "Password terlalu lemah (min. 6 karakter).";
+                    }
+
+                    Swal.fire({
+                        title: 'Gagal Daftar',
+                        text: pesanError,
+                        icon: 'error',
+                        confirmButtonText: 'Coba Lagi',
+                        background: '#fff',
+                        color: '#344767'
+                    });
+                });
+        });
+    </script>
+
+</body>
+</html>

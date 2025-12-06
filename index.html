@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>clean wash</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="css/style.css"> 
+</head>
+<body> 
+
+<div class="sidebar">
+  <div class="d-flex justify-content-between align-items-center w-100 px-3 mb-4">
+    <h3 class="mb-0"><i class="fas fa-hand-holding-water me-2"></i>CLEAN WASH</h3>
+  </div>
+  
+  <button class="menu-btn active" id="menu-dashboard" onclick="showPage('dashboard', this)"><i class="fas fa-tachometer-alt me-2"></i> Dashboard</button>
+  <button class="menu-btn" id="menu-layanan" onclick="showPage('layanan', this)"><i class="fas fa-tags me-2"></i> Data Layanan</button>
+  <button class="menu-btn" id="menu-staf" onclick="showPage('staf', this)"><i class="fas fa-user-friends me-2"></i> Manajemen Staf</button>
+  <button class="menu-btn" id="menu-pengeluaran" onclick="showPage('pengeluaran', this)"><i class="fas fa-receipt me-2"></i> Input Pengeluaran</button>
+  <button class="menu-btn" id="menu-laporan" onclick="showPage('laporan', this)"><i class="fas fa-chart-line me-2"></i> Laporan Keuangan</button>
+  <button class="menu-btn" id="menu-input" onclick="showPage('input', this)"><i class="fas fa-plus-square me-2"></i> Input Pesanan</button>
+  <button class="menu-btn" id="menu-view" onclick="showPage('view', this)"><i class="fas fa-list me-2"></i> Daftar Pesanan</button>
+</div>
+
+<div class="top-navbar">
+    
+    <button class="btn btn-transparent p-0 me-3" onclick="toggleSidebar()" style="color: #344767; font-size: 20px;">
+        <i class="fas fa-bars" id="toggleIcon"></i>
+    </button>
+    
+    <div class="brand-text"></div>
+    
+    <div class="d-flex align-items-center ms-auto">
+        <div class="dropdown">
+            <div class="user-profile d-flex align-items-center gap-2" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <div class="text-end d-none d-md-block" style="color: #344767;">
+                    <div class="fw-bold" id="namaUser">Memuat...</div>
+                    <div style="font-size: 11px; opacity: 0.8;" id="roleUser">Karyawan</div> </div>
+                <div class="profile-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <i class="fas fa-chevron-down text-secondary ms-1" style="font-size: 12px;"></i>
+            </div>
+
+            <ul class="dropdown-menu dropdown-menu-end shadow-lg border-0 mt-2" style="border-radius: 12px; overflow: hidden;">
+                <li><h6 class="dropdown-header">Akun Saya</h6></li>
+                <li>
+                    <a class="dropdown-item" href="javascript:void(0)" onclick="showPage('profil')">
+                        <i class="fas fa-user-cog me-2 text-secondary"></i>Profil Saya
+                    </a>
+                </li>
+                <li><hr class="dropdown-divider"></li>
+                <li>
+                    <a class="dropdown-item text-danger fw-bold" href="#" onclick="logout()">
+                        <i class="fas fa-sign-out-alt me-2"></i>Logout
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<div class="content" style="margin-top: 0; padding-top: 20px;">
+    
+    <div id="page-dashboard" class="content-section active">
+        <h2 class="page-title"><i class="fas fa-home me-2"></i> Dashboard Operasional</h2>
+        
+        <div class="dashboard-cards mb-4">
+            <div class="card-stat bg-blue"><div class="card-body"><div class="card-info"><h3 id="countPesanan">0</h3><p>Total Pesanan Masuk</p></div><div class="card-icon"><i class="fas fa-clipboard-list"></i></div></div></div>
+            <div class="card-stat bg-orange"><div class="card-body"><div class="card-info"><h3 id="countDiproses">0</h3><p>Sedang Diproses</p></div><div class="card-icon"><i class="fas fa-spinner"></i></div></div></div>
+            <div class="card-stat bg-green"><div class="card-body"><div class="card-info"><h3 id="countLunas">0</h3><p>Pembayaran Lunas</p></div><div class="card-icon"><i class="fas fa-money-check-alt"></i></div></div></div>
+            <div class="card-stat bg-red" id="financeCard"><div class="card-body"><div class="card-info"><h3 id="countStaf">0</h3><p>Total Staf</p></div><div class="card-icon"><i class="fas fa-user-tie"></i></div></div></div>
+        </div>
+
+        <div class="row">
+            <div class="col-md-8 mb-3"><div class="card-custom h-100"><h5 class="mb-3"><i class="fas fa-chart-bar me-2"></i>Status Pesanan Per Bulan</h5><canvas id="barChart"></canvas></div></div>
+            <div class="col-md-4 mb-3"><div class="card-custom h-100"><h5 class="mb-3"><i class="fas fa-chart-pie me-2"></i>Proporsi Data Master</h5><canvas id="pieChart"></canvas></div></div>
+        </div>
+    </div>
+
+    <div id="page-profil" class="content-section">
+        <h2 class="page-title">Profil Saya</h2>
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card-custom text-center shadow-lg">
+                    <div class="mx-auto mb-4" style="width: 100px; height: 100px; background: #E9ECEF; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #7B2CBF; font-size: 40px; box-shadow: 0 5px 15px rgba(0,0,0,0.1);"><i class="fas fa-user"></i></div>
+                    <h4 class="fw-bold mb-1" id="dispNama">Nama User</h4>
+                    <p class="text-muted small mb-4" id="dispEmail">email@contoh.com</p>
+                    <form id="formProfil" class="text-start">
+                        <div class="mb-3"><label>Nama Lengkap</label><input type="text" id="profNama" class="form-control" required></div>
+                        <div class="mb-3"><label>Email</label><input type="email" id="profEmail" class="form-control" readonly></div>
+                        <div class="mb-4"><label>User ID</label><input type="text" id="profUid" class="form-control" readonly style="font-size: 12px; font-family: monospace;"></div>
+                        <button type="submit" class="btn-save py-2"><i class="fas fa-save me-2"></i>Simpan Perubahan</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="page-layanan" class="content-section">
+        <h2 class="page-title">Kelola Data Layanan & Harga</h2>
+        <div class="card-custom mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5><i class="fas fa-tags me-2"></i>Form Layanan</h5>
+                <button type="button" class="btn-cancel" onclick="resetForm('layanan')"><i class="fas fa-times me-2"></i>Batal Edit</button>
+            </div>
+            <form id="formLayanan" class="row g-4">
+                <div class="col-12"><label>Nama Layanan</label><input type="text" id="namaLayanan" class="form-control" placeholder="Contoh: Cuci Kering Reguler" required></div>
+                
+                <div class="col-md-6">
+                    <label class="fw-bold text-secondary">Harga per Kg (Rp.)</label>
+                    <div class="row g-2">
+                        <div class="col"><input type="number" id="hargaKgMin" class="form-control" placeholder="Min (cth: 8000)" required min="0"></div>
+                        <div class="col"><input type="number" id="hargaKgMax" class="form-control" placeholder="Max (cth: 12000)" required min="0"></div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <label class="fw-bold text-secondary">Harga per Pcs (Rp.)</label>
+                    <div class="row g-2">
+                        <div class="col"><input type="number" id="hargaPcsMin" class="form-control" placeholder="Min (cth: 15000)" required min="0"></div>
+                        <div class="col"><input type="number" id="hargaPcsMax" class="form-control" placeholder="Max (cth: 30000)" required min="0"></div>
+                    </div>
+                </div>
+                
+                <div class="col-12 d-flex align-items-end">
+                    <button type="submit" id="btnLayanan" class="btn btn-primary w-100 btn-save">Simpan</button>
+                </div>
+            </form>
+        </div>
+        <div class="table-box">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Nama Layanan</th>
+                        <th>Harga / Kg</th>
+                        <th>Harga / Pcs</th>
+                        <th class="text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelLayanan"></tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="page-staf" class="content-section">
+        <h2 class="page-title">Kelola Data Staf</h2>
+        
+        <div class="card-custom mb-5" id="stafFormContainer" style="display:none;">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5 id="formStafTitle"><i class="fas fa-edit me-2"></i>Edit NIP Staf</h5>
+                <button type="button" class="btn-cancel" onclick="resetForm('staf')"><i class="fas fa-times me-2"></i>Batal Edit</button>
+            </div>
+            <form id="formStaf" class="row g-4">
+                
+                <div class="col-md-12 mb-3">
+                    <div id="currentStafDisplay" class="alert alert-info py-2" style="font-weight: 600;">
+                        Mengedit NIP untuk: <span id="stafNamaEdit" class="fw-bold"></span>
+                    </div>
+                </div>
+
+                <div class="col-md-10">
+                    <label>NIP/ID Karyawan</label>
+                    <input type="text" id="nipStaf" class="form-control" placeholder="NIP atau ID Karyawan" required>
+                    <input type="hidden" id="namaStaf">
+                </div>
+                <div class="col-md-2 d-flex align-items-end">
+                    <button type="submit" id="btnStaf" class="btn btn-primary w-100 btn-save">Simpan</button>
+                </div>
+                <p class="text-muted small mt-2">Catatan: Gunakan tombol Edit (Kuning) di tabel untuk mengubah NIP/ID Karyawan.</p>
+            </form>
+        </div>
+        
+        <div class="table-box">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Nama Staf (Role)</th>
+                        <th class="text-center">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="tabelStaf"></tbody>
+            </table>
+        </div>
+    </div>
+    
+    <div id="page-role" class="content-section">
+        <h2 class="page-title">Kelola Peran (Role) Pengguna</h2>
+        <div class="card-custom mx-auto shadow-lg" style="max-width: 500px; border-top: 5px solid #7B2CBF;">
+            <h5 class="mb-4">Ubah Peran untuk <span id="roleUserName" class="text-info">...</span></h5>
+            <form id="formEditRole">
+                <div class="mb-3">
+                    <label>Email Pengguna</label>
+                    <input type="email" id="roleUserEmail" class="form-control" readonly>
+                </div>
+                <div class="mb-4">
+                    <label>Pilih Peran Baru</label>
+                    <select id="selectRole" class="form-select" required>
+                        <option value="admin">Admin</option>
+                        <option value="karyawan">Karyawan</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-save w-100">Simpan Peran Baru</button>
+                <button type="button" class="btn-cancel w-100 mt-2" onclick="showPage('staf', document.getElementById('menu-staf'))">Batal</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="page-pengeluaran" class="content-section">
+        <h2 class="page-title"><i class="fas fa-receipt me-2"></i> Input & Kelola Pengeluaran</h2>
+        <div class="card-custom mb-5">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h5><i class="fas fa-hand-holding-usd me-2"></i>Form Pengeluaran</h5>
+                <button type="button" class="btn-cancel" onclick="resetForm('pengeluaran')"><i class="fas fa-times me-2"></i>Batal Edit</button>
+            </div>
+            <form id="formPengeluaran" class="row g-4">
+                <div class="col-md-6">
+                    <label>Tanggal Transaksi</label>
+                    <input type="date" id="pengeluaranTanggal" class="form-control" required>
+                </div>
+                <div class="col-md-6">
+                    <label>Kategori Pengeluaran</label>
+                    <select id="pengeluaranKategori" class="form-select" required>
+                        <option value="">-- Pilih Kategori --</option>
+                        <option value="Operasional">Operasional (Listrik, Air, Sabun)</option>
+                        <option value="Gaji">Gaji/Insentif Staf</option>
+                        <option value="Maintenance">Maintenance Alat/Gedung</option>
+                        <option value="Lainnya">Lainnya</option>
+                    </select>
+                </div>
+                
+                <div class="col-12">
+                    <label>Deskripsi Pengeluaran</label>
+                    <input type="text" id="pengeluaranDeskripsi" class="form-control" placeholder="Contoh: Beli deterjen cair 10 liter" required>
+                </div>
+                
+                <div class="col-12">
+                    <label>Nominal (Rp.)</label>
+                    <input type="number" id="pengeluaranNominal" class="form-control" placeholder="Minimal 1000" required min="1000">
+                </div>
+                
+                <div class="col-12 d-flex align-items-end">
+                    <button type="submit" id="btnPengeluaran" class="btn btn-primary w-100 btn-save">Simpan Pengeluaran</button>
+                </div>
+            </form>
+        </div>
+        
+        <div class="card-custom">
+            <h5 class="mb-4"><i class="fas fa-table me-2"></i>Daftar Pengeluaran Terbaru</h5>
+             <div class="alert alert-danger py-2 mb-4">
+                Total Pengeluaran: <span class="fw-bold" id="totalPengeluaranDisplay">Rp. 0</span>
+            </div>
+            <div class="table-box">
+                <table class="table table-hover align-middle">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Tanggal</th>
+                            <th>Kategori</th>
+                            <th>Deskripsi</th>
+                            <th class="text-end">Nominal (Rp.)</th>
+                            <th class="text-center">Aksi</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelPengeluaran"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+
+    <div id="page-laporan" class="content-section">
+        <h2 class="page-title"><i class="fas fa-chart-line me-2"></i>Laporan Keuangan & Analisis</h2>
+        
+        <div class="dashboard-cards mb-4" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));">
+            <div class="card-stat bg-green">
+                <div class="card-body">
+                    <div class="card-info">
+                        <h3><span id="laporanPemasukan">Rp. 0</span></h3>
+                        <p>Total Pemasukan (Lunas)</p>
+                    </div>
+                    <div class="card-icon"><i class="fas fa-wallet"></i></div>
+                </div>
+            </div>
+            <div class="card-stat bg-red">
+                <div class="card-body">
+                    <div class="card-info">
+                        <h3><span id="laporanPengeluaran">Rp. 0</span></h3>
+                        <p>Total Pengeluaran</p>
+                    </div>
+                    <div class="card-icon"><i class="fas fa-sign-out-alt"></i></div>
+                </div>
+            </div>
+            <div class="card-stat" style="background: linear-gradient(45deg, #00A896, #2ecc71);">
+                <div class="card-body">
+                    <div class="card-info">
+                        <h3><span id="laporanKasBersih">Rp. 0</span></h3>
+                        <p>Total Kas Bersih</p>
+                    </div>
+                    <div class="card-icon"><i class="fas fa-balance-scale"></i></div>
+                </div>
+            </div>
+            <div class="card-stat bg-orange">
+                <div class="card-body">
+                    <div class="card-info">
+                        <h3><span id="laporanPiutang">Rp. 0</span></h3>
+                        <p>Total Piutang (Belum Lunas)</p>
+                    </div>
+                    <div class="card-icon"><i class="fas fa-hand-holding-usd"></i></div>
+                </div>
+            </div>
+            <div class="card-stat" style="background: linear-gradient(45deg, #7B2CBF, #9D4EDD);">
+                <div class="card-body">
+                    <div class="card-info">
+                        <h3><span id="countTransaksiLunas">0</span></h3>
+                        <p>Total Transaksi Lunas</p>
+                    </div>
+                    <div class="card-icon"><i class="fas fa-receipt"></i></div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-12 mb-4">
+                <div class="card-custom h-100">
+                    <h5 class="mb-3"><i class="fas fa-chart-area me-2"></i>Tren Pemasukan Bulanan (Lunas)</h5>
+                    <canvas id="monthlyChart"></canvas>
+                    <p class="text-muted mt-3 small">Catatan: Grafik ini menunjukkan nilai total *bayar* dari pesanan berstatus Lunas.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-custom">
+            <h5 class="mb-4"><i class="fas fa-table me-2"></i>Detail Transaksi Lunas</h5>
+            <div class="table-box">
+                <table class="table table-hover align-middle" id="laporanDetailTable">
+                    <thead>
+                        <tr>
+                            <th>No</th>
+                            <th>Tanggal</th>
+                            <th>Pelanggan</th>
+                            <th>Layanan</th>
+                            <th class="text-center">Kuantitas</th>
+                            <th class="text-end">Total Biaya</th>
+                            <th class="text-end">Bayar Diterima</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabelLaporanDetail">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div id="page-input" class="content-section">
+        <h2 class="page-title">Form Input Pesanan Baru</h2>
+        <div class="card-custom mx-auto shadow-lg" style="max-width: 900px;"> <div class="text-center mb-4"><h4 class="mt-3 fw-bold text-dark">Pencatatan Pesanan Pelanggan</h4></div>
+            <form id="formPesanan" class="row g-3">
+                <div class="col-md-4">
+                    <label>Tanggal Pesanan</label>
+                    <input type="date" id="inpTanggal" class="form-control" required>
+                </div>
+                <div class="col-md-4">
+                    <label>Nama Pelanggan</label>
+                    <input type="text" id="inpNamaPlg" class="form-control" placeholder="Nama" required>
+                </div>
+                <div class="col-md-4">
+                    <label>No. Telepon</label>
+                    <input type="tel" id="inpTelp" class="form-control" placeholder="08xxxxxxxxxx" required>
+                </div>
+
+                <div class="col-md-4">
+                    <label>Pilih Layanan</label>
+                    <select id="inpLayanan" class="form-select" required onchange="updateHargaRentang('inp')">
+                        <option value="">-- Pilih Layanan --</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label>Satuan Harga</label>
+                    <select id="inpSatuan" class="form-select" required onchange="updateHargaRentang('inp')">
+                        <option value="kg">Per Kilogram</option>
+                        <option value="pcs">Per Satuan</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label>Rentang Harga</label>
+                    <input type="text" id="inpRentangHarga" class="form-control" readonly value="Rp. 0 - Rp. 0">
+                </div>
+
+                <div class="col-md-4">
+                    <label id="labelKuantitas">Jumlah (Kg/Pcs)</label>
+                    <input type="number" id="inpKuantitas" class="form-control" placeholder="0" required min="1" step="any" oninput="updateBiayaInput('inp')">
+                </div>
+                <div class="col-md-4">
+                    <label>Harga Satuan Digunakan</label>
+                    <input type="number" id="inpHargaManual" class="form-control fw-bold" placeholder="0" required min="0" step="500" oninput="updateBiayaInput('inp')">
+                </div>
+                <div class="col-md-4">
+                    <label>Total Biaya</label>
+                    <input type="hidden" id="inpTotal" value="0">
+                    <div class="form-control" style="font-size: 1.2rem;" id="dispTotalBiaya">Rp. 0</div>
+                </div>
+
+                <div class="col-md-4">
+                    <label>Jumlah Bayar</label>
+                    <input type="number" id="inpBayar" class="form-control" placeholder="0" min="0">
+                </div>
+                <div class="col-md-4">
+                    <label>Status Pembayaran</label>
+                    <select id="inpStatusBayar" class="form-select" required>
+                        <option>Belum Lunas</option><option>Lunas</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label>Staf Penerima</label>
+                    <select id="inpStaf" class="form-select" required><option value="">-- Pilih Staf --</option></select>
+                </div>
+                
+                <div class="col-12">
+                    <button class="btn-save w-100 py-3" type="submit"><i class="fas fa-check-circle me-2"></i>Simpan Pesanan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="page-edit-pesanan" class="content-section">
+        <h2 class="page-title">Edit Data Pesanan</h2>
+        <div class="card-custom mx-auto shadow-lg" style="max-width: 900px; border-top: 5px solid #ffc107;"> <div class="mb-3"><h5>Perbarui Pesanan & Status</h5></div>
+            <form id="formEditPesanan" class="row g-3">
+                <div class="col-md-4">
+                    <label>Tanggal Pesanan</label>
+                    <input type="date" id="editTanggal" class="form-control" required>
+                </div>
+                <div class="col-md-4">
+                    <label>Nama Pelanggan</label>
+                    <input type="text" id="editNamaPlg" class="form-control" required>
+                </div>
+                <div class="col-md-4">
+                    <label>No. Telepon</label>
+                    <input type="tel" id="editTelp" class="form-control" required>
+                </div>
+
+                <div class="col-md-4">
+                    <label>Pilih Layanan</label>
+                    <select id="editLayanan" class="form-select" required onchange="updateHargaRentang('edit')">
+                        <option value="">-- Pilih Layanan --</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label>Satuan Harga</label>
+                    <select id="editSatuan" class="form-select" required onchange="updateHargaRentang('edit')">
+                        <option value="kg">Per Kilogram (Kg)</option>
+                        <option value="pcs">Per Satuan (Pcs)</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label>Rentang Harga</label>
+                    <input type="text" id="editRentangHarga" class="form-control" readonly value="Rp. 0 - Rp. 0">
+                </div>
+
+                <div class="col-md-4">
+                    <label id="labelKuantitasEdit">Jumlah (Kg/Pcs)</label>
+                    <input type="number" id="editKuantitas" class="form-control" placeholder="0" required min="1" step="any" oninput="updateBiayaInput('edit')">
+                </div>
+                <div class="col-md-4">
+                    <label>Harga Satuan Digunakan</label>
+                    <input type="number" id="editHargaManual" class="form-control fw-bold" placeholder="0" required min="0" step="500" oninput="updateBiayaInput('edit')">
+                </div>
+                <div class="col-md-4">
+                    <label>Total Biaya</label>
+                    <input type="hidden" id="editTotal" value="0">
+                    <div class="form-control" style="font-size: 1.2rem;" id="dispTotalBiayaEdit">Rp. 0</div>
+                </div>
+                
+                <div class="col-md-4">
+                    <label>Jumlah Bayar</label>
+                    <input type="number" id="editBayar" class="form-control" min="0">
+                </div>
+                <div class="col-md-4">
+                    <label>Status Pesanan</label>
+                    <select id="editStatusPesanan" class="form-select" required>
+                        <option>Masuk</option><option>Diproses</option><option>Selesai</option><option>Diambil</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label>Status Pembayaran</label>
+                    <select id="editStatusBayar" class="form-select" required>
+                        <option>Belum Lunas</option><option>Lunas</option>
+                    </select>
+                </div>
+
+                <div class="col-12">
+                    <label>Staf Penerima</label>
+                    <select id="editStaf" class="form-select" required><option value="">-- Pilih Staf --</option></select>
+                </div>
+                
+                <div class="col-12 d-flex gap-2 mt-4">
+                    <button class="btn btn-warning w-100 fw-bold text-white" type="submit">Simpan Perubahan</button>
+                    <button type="button" class="btn btn-light w-100 border fw-bold" onclick="showPage('view')">Batal</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div id="page-view" class="content-section">
+        <h2 class="page-title">Daftar Pesanan Laundry</h2>
+        
+        <div class="mb-3 text-end" id="exportButtons"> 
+            <button class="btn btn-info text-white me-2 fw-bold" onclick="exportToPdf()">
+                <i class="fas fa-file-pdf me-2"></i> Ekspor PDF
+            </button>
+            <button class="btn btn-success fw-bold" onclick="exportToExcel()">
+                <i class="fas fa-file-excel me-2"></i> Ekspor Excel
+            </button>
+        </div>
+        
+        <div class="table-box">
+            <table class="table table-hover align-middle" id="pesananTable">
+                <thead><tr><th>No</th><th>Tanggal</th><th>Pelanggan</th><th>Layanan</th><th class="text-center">Kuantitas</th><th class="text-end">Total Biaya</th><th class="text-center">Status Bayar</th><th class="text-center">Status Pesanan</th><th class="text-center">Staf</th><th class="text-center">Aksi</th></tr></thead>
+                <tbody id="tabelPesanan"></tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+<script src="js/firebase-config.js"></script> 
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+<script src="https://cdn.sheetjs.com/xlsx-0.19.2/package/dist/xlsx.full.min.js"></script>
+
+<script src="js/script.js"></script> 
+
+</body>
+</html>
